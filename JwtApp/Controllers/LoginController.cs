@@ -11,11 +11,13 @@ namespace JwtApp.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
+        private readonly ILogger<LoginController> _logger;
         private IConfiguration _config;
 
-        public LoginController(IConfiguration config)
+        public LoginController(IConfiguration config, ILogger<LoginController> logger)
         {
             _config = config;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -23,10 +25,12 @@ namespace JwtApp.Controllers
         {
             try
             {
+                _logger.LogInformation("Executing Logging Controller");
                 var user = Authenticate(userLogin);
                 if (user is not null)
                 {
                     var token = GenerateToken(user);
+                    _logger.LogError("{@Username} is authenticated sucessfully", user.Username);
                     return Ok(token);
                 }
 
